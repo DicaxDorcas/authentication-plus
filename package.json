@@ -1,0 +1,25 @@
+{
+    "author": "Ross Walker <github@dicaxdorcas.com> (http://dicaxdorcas.com/)",
+    "owner": "dicaxdorcas",
+    "name": "authentication-plus",
+    "description": "Authentication for node.js",
+    "version": "0.0.1",
+    "main": "./authentication-plus.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:DicaxDorcas/authentication-plus.git"
+    },
+    "license": "MIT",
+    "keywords": [
+        "sessions",
+        "authentication",
+        "persistent",
+        "json"
+    ],
+    "dependencies": {
+        "sessions-plus": ">= 0.0.3"
+    },
+    "engines": {
+        "node": ">= 0.10.11"
+    }
+}
