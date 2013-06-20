@@ -60,7 +60,7 @@ exports.auth = function (user, password, req) {
         user_data = JSON.parse(fs.readFileSync(authFolder + user + '.json', encoding='utf8'));
         if((user_data.active == true) && (user_data.password == password)) {
             req.session.user = {};
-            req.session.user.name = user_data.name;
+            req.session.user.username = user_data.username;
             req.session.user.email = user_data.email;
             req.session.user.level = user_data.level;
         
