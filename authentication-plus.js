@@ -1,6 +1,5 @@
 var fs = require('fs');
 
-var sha256 = require('./SHA256.js');
 var sessionsplus = require('sessions-plus');
 
 
@@ -8,18 +7,28 @@ var sessionsplus = require('sessions-plus');
 authFolder = './auth/';
 // --
 
+// -- Checks if folder exists in project where executed.
+function initialChecks() {
+    if(!fs.existsSync(authFolder)) {
+            fs.mkdirSync(authFolder);
+    }
+}
+// --
+
 // -- Add a user.
-exports.add = function (user, password, email) {
+exports.add = function (user, password, email, level) {
+    initialChecks();
     // Returns true if successful.
     user = makeCanonical(user);
     if(fs.existsSync(authFolder + user + ".json")) {
         return false;
-    } else {
+    } else if(validateUser(user)){
         user_data = {};
         user_data.name = user;
-        user_data.password = sha256.hash(password);
+        user_data.password = password;
         user_data.email = email;
-        user_data.active = 'true';
+        user_data.active = true;
+        user_data.level = 1;
         fs.writeFileSync(authFolder + user_data.name + ".json", JSON.stringify(user_data));
         return true;
     }
@@ -28,6 +37,7 @@ exports.add = function (user, password, email) {
 
 // -- Remove a user.
 exports.remove = function (user) {
+    initialChecks();
     // Returns true if successful.
     user = makeCanonical(user);
     if(validateUser(user)) {
@@ -43,14 +53,16 @@ exports.remove = function (user) {
 
 // -- Authenticate a user.
 exports.auth = function (user, password, req) {
+    initialChecks();
     // Returns req if correct or a boolean false if incorrect.
     user = makeCanonical(user);
     if((validateUser(user)) && (fs.existsSync(authFolder + user + ".json"))) {
         user_data = JSON.parse(fs.readFileSync(authFolder + user + '.json', encoding='utf8'));
-        if((typeof req.session!='undefined') && (fs.existsSync(authFolder + user + ".json")) && (validateUser(user)) && (user_data.password == password)) {
+        if((user_data.active == true) && (user_data.password == password)) {
             req.session.user = {};
             req.session.user.name = user_data.name;
             req.session.user.email = user_data.email;
+            req.session.user.level = user_data.level;
         
             return req;
         } else {
@@ -66,7 +78,7 @@ exports.auth = function (user, password, req) {
 // -- Validate a user name; given as string.
 function validateUser(user) {
     // Returns true if it matches correct format.
-    user = user.test(/^[a-z0-9]+$/i);
+    user = /^[a-z0-9]+$/i.test(user);
     return user;
 }
 
