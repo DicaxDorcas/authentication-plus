@@ -28,7 +28,7 @@ exports.add = function (user, password, email, level) {
         user_data.password = password;
         user_data.email = email;
         user_data.active = true;
-        user_data.level = 1;
+        user_data.level = level;
         fs.writeFileSync(authFolder + user_data.name + ".json", JSON.stringify(user_data));
         return true;
     }
