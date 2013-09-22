@@ -3,7 +3,7 @@
     "owner": "dicaxdorcas",
     "name": "authentication-plus",
     "description": "Authentication for node.js",
-    "version": "0.0.1f",
+    "version": "0.0.2",
     "main": "./authentication-plus.js",
     "repository": {
         "type": "git",
