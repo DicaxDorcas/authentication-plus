@@ -59,10 +59,8 @@ exports.auth = function (user, password, req) {
     if((validateUser(user)) && (fs.existsSync(authFolder + user + ".json"))) {
         user_data = JSON.parse(fs.readFileSync(authFolder + user + '.json', encoding='utf8'));
         if((user_data.active == true) && (user_data.password == password)) {
-            req.session.user = {};
-            req.session.user.name = user_data.name;
-            req.session.user.email = user_data.email;
-            req.session.user.level = user_data.level;
+            req.session.user = user_data;
+            req.session.user.password = '';
         
             return req;
         } else {
@@ -72,6 +70,14 @@ exports.auth = function (user, password, req) {
         return false;
     }
 
+}
+// --
+
+// -- Update a user's details.
+exports.update = function (user, req) {
+    user_data = JSON.parse(fs.readFileSync(authFolder + req.session.user.name + '.json', encoding='utf8'));
+    req.session.user.password = user_data.password;
+    fs.writeFileSync(authFolder + req.session.user.name + ".json", JSON.stringify(req.session.user));
 }
 // --
 
